@@ -49,6 +49,14 @@ A proxy pod answers `200` on `/readyz` (port 8080) when it has synced the custom
 
 If the proxy cannot decide, it fails closed. It denies the request or forwards it with no credential. It never uses a credential as a fallback.
 
+### Files on each GitHub release
+
+From 0.4.1, each [GitHub release](https://github.com/solidDoWant/registrygate/releases) has these files:
+
+- `crds.yaml`: the four CRDs of that version in one file. Use it if you manage CRDs outside the Helm release: set the chart value `crds.install` to `false`, and apply `https://github.com/solidDoWant/registrygate/releases/download/v<version>/crds.yaml` yourself.
+- `docker-credential-registrygate-<os>-<arch>`: the credential helper for Linux and macOS, on amd64 and arm64. It is the same program as in the image `ghcr.io/soliddowant/registrygate-credential-helper`.
+- `checksums.txt`: the SHA-256 sums of these files.
+
 ## Optional chart objects
 
 Three objects are off by default. [Chart values](chart-values.md) lists their values.

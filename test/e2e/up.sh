@@ -51,20 +51,20 @@ stop_cluster() {
 trap 'stop_cluster; rm -rf "$work"' EXIT
 
 # CI builds the images once for both tracks, at the same time as this script
-# runs, and writes the build's exit status to E2E_IMAGES_EXIT_FILE when it ends
-# (its output is in E2E_IMAGES_LOG). A developer machine builds them here.
+# runs, and writes the build's exit status to CI_WITH_EXIT_FILE when it ends
+# (its output is in CI_WITH_LOG). A developer machine builds them here.
 wait_for_images() {
-	if [[ -z "${E2E_IMAGES_EXIT_FILE:-}" ]]; then
+	if [[ -z "${CI_WITH_EXIT_FILE:-}" ]]; then
 		log "building the images"
 		./test/e2e/build-images.sh
 		log "images built"
 		return
 	fi
 	log "waiting for the images to build"
-	while [[ ! -s "$E2E_IMAGES_EXIT_FILE" ]]; do sleep 1; done
-	if [[ "$(<"$E2E_IMAGES_EXIT_FILE")" != 0 ]]; then
+	while [[ ! -s "$CI_WITH_EXIT_FILE" ]]; do sleep 1; done
+	if [[ "$(<"$CI_WITH_EXIT_FILE")" != 0 ]]; then
 		echo "the e2e images did not build:" >&2
-		cat "${E2E_IMAGES_LOG:-/dev/null}" >&2
+		cat "${CI_WITH_LOG:-/dev/null}" >&2
 		log "image build failed"
 		exit 1
 	fi
