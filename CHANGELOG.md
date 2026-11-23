@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.1-rc.1
+
+registrygate is a proxy for container registries, such as `ghcr.io` and `quay.io`. It runs in a Kubernetes cluster. CI pods send their pushes, pulls and deletes to the proxy with the token of their own ServiceAccount. The proxy adds the registry credential, so the pods never see it. This release is a candidate (a test version before the final release) for 0.4.1. The proxy, the credential helper and the chart behave the same as in 0.4.0. What is new is the files on each GitHub release. Install it with the Helm chart `oci://ghcr.io/soliddowant/charts/registrygate`, version `0.4.1-rc.1`. [Install registrygate](https://github.com/solidDoWant/registrygate/blob/v0.4.1-rc.1/docs/admin/install.md) tells you how.
+
+### Upgrade notes for admins
+
+You do not have to change anything. To upgrade from 0.4.0, install the chart version `0.4.1-rc.1` with the same values.
+
+### Deployment
+
+- Each GitHub release now has these files: `crds.yaml`, with the four CRDs of that version in one file; the credential helper `docker-credential-registrygate` for Linux and macOS on amd64 and arm64; and `checksums.txt` with their SHA-256 sums. If you manage the CRDs yourself (chart value `crds.install: false`), you can apply `https://github.com/solidDoWant/registrygate/releases/download/v<version>/crds.yaml`. [Files on each GitHub release](https://github.com/solidDoWant/registrygate/blob/v0.4.1-rc.1/docs/admin/install.md#files-on-each-github-release) has the details. ([#262](https://github.com/solidDoWant/registrygate/pull/262))
+
+Internal work: releases are built on Tekton instead of GitHub Actions, CI runs on the shared Tekton Pipelines, the e2e tests are faster (parallel tests, cached kind images, faster polling), and the project's agents act as the GitHub App through githubgate interception ([#225](https://github.com/solidDoWant/registrygate/pull/225), [#226](https://github.com/solidDoWant/registrygate/pull/226), [#227](https://github.com/solidDoWant/registrygate/pull/227), [#232](https://github.com/solidDoWant/registrygate/pull/232)–[#236](https://github.com/solidDoWant/registrygate/pull/236), [#238](https://github.com/solidDoWant/registrygate/pull/238), [#244](https://github.com/solidDoWant/registrygate/pull/244)–[#249](https://github.com/solidDoWant/registrygate/pull/249), [#252](https://github.com/solidDoWant/registrygate/pull/252), [#254](https://github.com/solidDoWant/registrygate/pull/254), [#256](https://github.com/solidDoWant/registrygate/pull/256), [#258](https://github.com/solidDoWant/registrygate/pull/258), [#259](https://github.com/solidDoWant/registrygate/pull/259), [#261](https://github.com/solidDoWant/registrygate/pull/261), [#262](https://github.com/solidDoWant/registrygate/pull/262)).
+
+### Known issues
+
+None.
+
 ## 0.4.0
 
 registrygate is a proxy for container registries, such as `ghcr.io` and `quay.io`. It runs in a Kubernetes cluster. CI pods send their pushes, pulls and deletes to the proxy with the token of their own ServiceAccount. The proxy adds the registry credential, so the pods never see it. Release 0.4.0 completes the fourth phase of work. This phase changed how the project is built and tested: CI now runs on Tekton. The proxy, the credential helper and the chart behave the same as in 0.3.0. Install it with the Helm chart `oci://ghcr.io/soliddowant/charts/registrygate`, version `0.4.0`. [Install registrygate](https://github.com/solidDoWant/registrygate/blob/v0.4.0/docs/admin/install.md) tells you how.
