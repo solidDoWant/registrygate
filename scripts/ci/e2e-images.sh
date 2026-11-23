@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Prints the pinned images the e2e cluster's pods pull, one per line, derived
 # from the files that name them (run from the repository root). test/e2e/up.sh
-# preloads them through the Docker daemon, and scripts/ci/cleanup.sh keeps them
+# preloads them through the Docker daemon, and the shared CI's cleanup (ci.yaml's keep-images) keeps them
 # while it removes older versions. With --node it prints the kind node image too.
 set -euo pipefail
 repos="$(mktemp)"

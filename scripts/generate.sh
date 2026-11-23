@@ -4,7 +4,6 @@
 #   - CRD manifests into config/crd/bases (the chart reads them from there);
 #   - the manager's ClusterRole (from the +kubebuilder:rbac markers) into config/rbac/role.yaml;
 #   - the chart's CRD and ClusterRole templates (scripts/generate-chart.sh).
-#   - the Tekton CI PipelineRuns in .tekton/ (scripts/ci/tekton-generate.sh).
 # Generated code is committed and never edited by hand.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
@@ -20,5 +19,3 @@ controller-gen rbac:roleName=manager-role crd paths=./... \
 # The generated reference pages under docs/admin/.
 ./scripts/docs/generate-reference.sh
 
-# The Tekton CI PipelineRuns in .tekton/, from their template.
-./scripts/ci/tekton-generate.sh

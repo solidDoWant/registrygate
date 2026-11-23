@@ -1,0 +1,71 @@
+# CI for the shared Tekton Pipelines (infra-mk3's container images/ci-tools,
+# whose ci-config documents this format). Every stage runs at once, in the CI
+# image built from flake.nix.
+version: 1
+image:
+  inputs:
+    - path: go.mod
+      lines: '^(module|go|toolchain) '
+# Files that cannot change what the build or the tests produce.
+not-code:
+  - "*.md"
+  - "docs/**"
+  - ".claude/**"
+  - "LICENSE"
+  - ".github/renovate.json5"
+  - ".github/renovate/**"
+stages:
+  lint:
+    run: make lint
+  unit:
+    run: make test && make build
+  generate:
+    run: make check-generate
+    own-tree: true
+  integration:
+    run: make test-integration
+  # The two e2e tracks run at the same time, each on its own kind cluster.
+  # They share one build of the e2e images (the same `with`), which runs while
+  # they create their clusters (test/e2e/up.sh waits for it).
+  e2e:
+    run: E2E_CLUSTER=registrygate-ci make test-e2e-main
+    kind: true
+    with: ./test/e2e/build-images.sh
+    # Go test files are never built into what e2e deploys, except its own.
+    ignore:
+      - "**/*_test.go"
+      - "!test/e2e/**"
+  e2e-walkthrough:
+    run: E2E_CLUSTER=registrygate-ci-walkthrough make test-e2e-walkthrough
+    kind: true
+    with: ./test/e2e/build-images.sh
+    ignore:
+      - "**/*_test.go"
+      - "!test/e2e/**"
+  docs:
+    run: make docs-check && ./scripts/check-tracking-ids.py
+    # The style report is advisory.
+    run-pull-request: make docs-check && ./scripts/check-tracking-ids.py && { ./scripts/docs/style_report.sh origin/master || true; }
+    paths:
+      - "**/*.md"
+      - "scripts/docs/**"
+  scoreboard:
+    # The scoreboard's tests read the real checklist; the unit stage runs
+    # them too when code changed.
+    run: ./scripts/acceptance-scoreboard_test.py
+    paths:
+      - "docs/acceptance/**"
+    push: false
+cleanup:
+  # The kind node image and the e2e images to keep in the golden cache.
+  keep-images: ./scripts/ci/e2e-images.sh --node
+test-guard: true
+release:
+  assets: ./scripts/ci/build-release-assets.sh "$RELEASE_VERSION" "$RELEASE_ASSETS"
+  build: make build-images VERSION="$RELEASE_VERSION" PUSH_ALL=true
+  images:
+    - ghcr.io/soliddowant/registrygate
+    - ghcr.io/soliddowant/registrygate-credential-helper
+  charts:
+    - deploy/charts/registrygate
+  chart-registry: oci://ghcr.io/soliddowant/charts
