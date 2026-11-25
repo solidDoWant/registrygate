@@ -28,8 +28,8 @@ const (
 	proxyClusterIP  = "10.96.0.50" // the address in docs/admin/ci-pods.md
 	clientLabel     = "registrygate-e2e-client"
 
-	dockerCLIImage  = "mirror.gcr.io/library/docker:29.10.0-cli@sha256:34507eb5069d8be82c95dd3b6987d4250fd5fee49b82e2509b7d7a7030740d6d"
-	dockerDindImage = "mirror.gcr.io/library/docker:29.10.0-dind@sha256:4bbc7223f81db790097c6dea42fb93e05b8fead4f0431fbe6ccaba6e8473201c"
+	dockerCLIImage  = "mirror.gcr.io/library/docker:29.10.1-cli@sha256:4e60c31615e83523afbb59773b25d055c0da9edcd5f80a4c6a6eebad49de1a25"
+	dockerDindImage = "mirror.gcr.io/library/docker:29.10.1-dind@sha256:fbbc96e0af32cdc190aff92ba97a1281a115351a723afe21af78879cc55126b0"
 )
 
 // env is the cluster the tests share.
