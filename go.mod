@@ -3,7 +3,7 @@ module github.com/solidDoWant/registrygate
 go 1.26.11
 
 require (
-	github.com/bmatcuk/doublestar/v4 v4.10.4
+	github.com/bmatcuk/doublestar/v4 v4.10.7
 	github.com/distribution/reference v0.6.0
 	github.com/docker/docker-credential-helpers v0.9.13
 	github.com/golang-jwt/jwt/v5 v5.3.1
